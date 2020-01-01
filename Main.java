@@ -27,17 +27,17 @@ private static int deep = 0;
       nums.add(i);
     }
 
-    nums = filterList(nums, last);
+    nums = filterList(nums, last, limit);
     System.out.println("====");
     return nums;
   }
 
-  private static List<Integer> filterList(List<Integer> list, int last) {
+  private static List<Integer> filterList(List<Integer> list, int last, int limit) {
     System.out.println("list " + list);
     System.out.println("last " + last);
 
+if(last*last < limit) {
     ++deep;
-    boolean filtered = false;
 
     for(ListIterator<Integer> i = list.listIterator(list.size()); i.hasPrevious();) {
       Integer val = i.previous();
@@ -45,18 +45,16 @@ private static int deep = 0;
       if(val != last && val % last == 0) {
         System.out.println("filter " + val);
         i.remove();
-        filtered = true;
       }
     }
 
-  if(filtered) {
     System.out.println("---");
     System.out.println("list " + list);
     for(ListIterator<Integer> i = list.listIterator(); i.hasNext();) {
       Integer val = i.next();
       if(val > last) {
         System.out.println("test " + val);
-        return filterList(list, val);
+        return filterList(list, val, limit);
       }
     }
   } else {
