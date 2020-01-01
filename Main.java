@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.function.IntPredicate;
 
 public class Main {
+private static int deep = 0;
 
   public static void main(String[] args) {
     for(int pn: findPrimeNumbers(100)) {
@@ -33,7 +34,10 @@ public class Main {
 
   private static List<Integer> filterList(List<Integer> list, int last) {
     System.out.println("list " + list);
-    System.out.println("* last " + last);
+    System.out.println("last " + last);
+
+    ++deep;
+    boolean filtered = false;
 
     for(ListIterator<Integer> i = list.listIterator(list.size()); i.hasPrevious();) {
       Integer val = i.previous();
@@ -41,10 +45,11 @@ public class Main {
       if(val != last && val % last == 0) {
         System.out.println("filter " + val);
         i.remove();
+        filtered = true;
       }
     }
 
-  if(last < list.size()/2) {
+  if(filtered) {
     System.out.println("---");
     System.out.println("list " + list);
     for(ListIterator<Integer> i = list.listIterator(); i.hasNext();) {
@@ -56,6 +61,7 @@ public class Main {
     }
   } else {
     System.out.println("enought filtered");
+    System.out.println("deep " + deep);
   }
 
     return list; 
