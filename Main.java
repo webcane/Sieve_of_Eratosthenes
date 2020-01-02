@@ -2,61 +2,65 @@ import java.util.Set;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.TreeMap;
 import java.util.function.IntPredicate;
 
 public class Main {
 private static int deep = 0;
 
   public static void main(String[] args) {
-    for(int pn: findPrimeNumbers(100)) {
-      System.out.println(pn);
+    for(Map.Entry<Integer, Boolean> pn: findPrimeNumbers(100).entrySet()) {
+      System.out.println(pn.getKey());
     }
   }
 
   // n - limit
-  public static List<Integer> findPrimeNumbers(int limit) {
+  public static Map<Integer, Boolean> findPrimeNumbers(int limit) {
         int last = 2;
         // prime list
-        List<Integer> nums = new ArrayList<Integer>();
+        TreeMap<Integer, Boolean> nums = new TreeMap<>();
 
     if(limit < last) return nums;
 
     for(int i = last; i <= limit; i++){
-      nums.add(i);
+      nums.put(i, false);
     }
 
     nums = filterList(nums, last, limit);
+
+    for(Iterator<Map.Entry<Integer, Boolean>> i = nums.entrySet().iterator(); i.hasNext(); ) {
+        Map.Entry<Integer, Boolean> entry = i.next();
+        if(entry.getValue()) {
+          i.remove();
+        }
+      }
+
     System.out.println("====");
     return nums;
   }
 
-  private static List<Integer> filterList(List<Integer> list, int last, int limit) {
+  private static TreeMap<Integer, Boolean> filterList(TreeMap<Integer, Boolean> list, int last, int limit) {
     System.out.println("list " + list);
     System.out.println("last " + last);
 
-if(last*last < limit) {
-    ++deep;
+    int squared = last*last;
+    if(squared < limit) {
+      ++deep;
 
-    for(ListIterator<Integer> i = list.listIterator(list.size()); i.hasPrevious();) {
-      Integer val = i.previous();
-      System.out.println("test " + val);
-      if(val != last && val % last == 0) {
-        System.out.println("filter " + val);
-        i.remove();
-      }
+    for(int i=squared; i <= limit; i += last) {
+      list.replace(i, true);    
     }
 
     System.out.println("---");
     System.out.println("list " + list);
-    for(ListIterator<Integer> i = list.listIterator(); i.hasNext();) {
-      Integer val = i.next();
-      if(val > last) {
-        System.out.println("test " + val);
-        return filterList(list, val, limit);
-      }
-    }
+
+    int next = list.higherKey(last);
+    return filterList(list, next, limit);
+
   } else {
     System.out.println("enought filtered");
     System.out.println("deep " + deep);
