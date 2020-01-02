@@ -1,4 +1,5 @@
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -10,7 +11,7 @@ public class Main {
 private static int deep = 0;
 
   public static void main(String[] args) {
-    for(int pn: findPrimeNumbers(120)) {
+    for(int pn: findPrimeNumbers(100)) {
       System.out.println(pn);
     }
   }
@@ -19,7 +20,7 @@ private static int deep = 0;
   public static Set<Integer> findPrimeNumbers(int limit) {
         int last = 2;
         // prime list
-        Set<Integer> nums = new LinkedHashSet<Integer>();
+        TreeSet<Integer> nums = new TreeSet<>();
 
     if(limit < last) return nums;
 
@@ -32,8 +33,7 @@ private static int deep = 0;
     return nums;
   }
 
-  private static Set<Integer> filterList(Set<Integer> list, int last, int limit) {
-    System.out.println("list " + list);
+  private static TreeSet<Integer> filterList(TreeSet<Integer> list, int last, int limit) {
     System.out.println("last " + last);
 
     int squared = last*last;
@@ -41,25 +41,12 @@ private static int deep = 0;
       ++deep;
 
       for(int i=squared; i <= limit; i += last) {
-        final int val = i;
-        list.removeIf(x -> {
-          if (x == val){ 
-            System.out.println("filter " + x);
-            return true;
-          }
-          return false;
-        });
+        list.remove(i);
       }
 
       System.out.println("---");
       System.out.println("list " + list);
-      for(Iterator<Integer> i = list.iterator(); i.hasNext();) {
-        Integer val = i.next();
-        if(val > last) {
-          System.out.println("test " + val);
-          return filterList(list, val, limit);
-        }
-      }
+      return filterList(list, list.higher(last), limit);
   } else {
     System.out.println("enought filtered");
     System.out.println("deep " + deep);
