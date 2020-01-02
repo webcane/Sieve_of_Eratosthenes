@@ -10,16 +10,16 @@ public class Main {
 private static int deep = 0;
 
   public static void main(String[] args) {
-    for(int pn: findPrimeNumbers(100)) {
+    for(int pn: findPrimeNumbers(120)) {
       System.out.println(pn);
     }
   }
 
   // n - limit
-  public static List<Integer> findPrimeNumbers(int limit) {
+  public static Set<Integer> findPrimeNumbers(int limit) {
         int last = 2;
         // prime list
-        List<Integer> nums = new ArrayList<Integer>();
+        Set<Integer> nums = new LinkedHashSet<Integer>();
 
     if(limit < last) return nums;
 
@@ -32,31 +32,34 @@ private static int deep = 0;
     return nums;
   }
 
-  private static List<Integer> filterList(List<Integer> list, int last, int limit) {
+  private static Set<Integer> filterList(Set<Integer> list, int last, int limit) {
     System.out.println("list " + list);
     System.out.println("last " + last);
 
-if(last*last < limit) {
-    ++deep;
+    int squared = last*last;
+    if(squared < limit) {
+      ++deep;
 
-    for(ListIterator<Integer> i = list.listIterator(list.size()); i.hasPrevious();) {
-      Integer val = i.previous();
-      System.out.println("test " + val);
-      if(val != last && val % last == 0) {
-        System.out.println("filter " + val);
-        i.remove();
+      for(int i=squared; i <= limit; i += last) {
+        final int val = i;
+        list.removeIf(x -> {
+          if (x == val){ 
+            System.out.println("filter " + x);
+            return true;
+          }
+          return false;
+        });
       }
-    }
 
-    System.out.println("---");
-    System.out.println("list " + list);
-    for(ListIterator<Integer> i = list.listIterator(); i.hasNext();) {
-      Integer val = i.next();
-      if(val > last) {
-        System.out.println("test " + val);
-        return filterList(list, val, limit);
+      System.out.println("---");
+      System.out.println("list " + list);
+      for(Iterator<Integer> i = list.iterator(); i.hasNext();) {
+        Integer val = i.next();
+        if(val > last) {
+          System.out.println("test " + val);
+          return filterList(list, val, limit);
+        }
       }
-    }
   } else {
     System.out.println("enought filtered");
     System.out.println("deep " + deep);
